@@ -3,8 +3,8 @@ Description=Manage Remote Command Manager Executable Service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/sabre56/Morpheus
-ExecStart=/home/sabre56/Morpheus/remote_comm_manager
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/remoteexecutor
 Restart=always
 RestartSec=1
 

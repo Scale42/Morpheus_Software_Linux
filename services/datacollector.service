@@ -3,8 +3,8 @@ Description=Manage Data Collection Executable Service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/sabre56/Morpheus
-ExecStart=/home/sabre56/Morpheus/data_collection
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/datacollector
 Restart=no
 
 [Install]

@@ -1,0 +1,12 @@
+[Unit]
+Description=Manage Health Checker Service
+After=network.target
+
+[Service]
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/healthchecker
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

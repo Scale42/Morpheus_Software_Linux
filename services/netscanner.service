@@ -3,8 +3,8 @@ Description=Manage NetScan Executable Service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/sabre56/Morpheus
-ExecStart=/home/sabre56/Morpheus/netscan
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/netscanner
 Restart=always
 RestartSec=1
 
