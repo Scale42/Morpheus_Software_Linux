@@ -25,8 +25,16 @@ echo "Cloning repository..."
 git clone "$REPO_URL" /tmp/morpheus-setup || { echo "Failed to clone repository"; exit 1; }
 
 # Create installation directory
-echo "Creating installation directory at $INSTALL_DIR..."
-sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
+# echo "Creating installation directory at $INSTALL_DIR..."
+# sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
+# Ensure the installation directory is writable
+echo "Ensuring $INSTALL_DIR is writable..."
+if [ ! -w "$INSTALL_DIR" ]; then
+    echo "$INSTALL_DIR is not writable. Adjusting permissions..."
+    sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
+    sudo chown -R "$(whoami):$(whoami)" "$INSTALL_DIR" || { echo "Failed to adjust ownership of $INSTALL_DIR"; exit 1; }
+    sudo chmod -R u+w "$INSTALL_DIR" || { echo "Failed to set write permissions on $INSTALL_DIR"; exit 1; }
+fi
 
 # Copy binaries
 echo "Copying binaries..."
@@ -37,18 +45,22 @@ sudo chmod +x "$INSTALL_DIR"/*
 echo "Copying configuration files..."
 sudo cp /tmp/morpheus-setup/config/config.txt "$INSTALL_DIR/" || { echo "Failed to copy config.txt"; exit 1; }
 sudo cp /tmp/morpheus-setup/config/morpheus.db "$INSTALL_DIR/" || { echo "Failed to copy morpheus.db"; exit 1; }
-sudo chown -R sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
-sudo chmod -R 664 "$INSTALL_DIR/morpheus.db"
+# sudo chown -R sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
+# sudo chmod -R 664 "$INSTALL_DIR/morpheus.db"
 
-# # Ensure the directory is writable
-# MOUNT_POINT="$INSTALL_DIR"
-# if mount | grep "$MOUNT_POINT" | grep -q "ro,"; then
-#     echo "$MOUNT_POINT is mounted as read-only. Remounting as read-write..."
-#     sudo mount -o remount,rw "$MOUNT_POINT" || { echo "Failed to remount $MOUNT_POINT as read-write"; exit 1; }
-#     echo "$MOUNT_POINT has been remounted as read-write."
-# else
-#     echo "$MOUNT_POINT is writable."
-# fi
+# Ensure morpheus.db is writable
+echo "Ensuring morpheus.db is writable..."
+DB_FILE="$INSTALL_DIR/morpheus.db"
+sudo chmod 664 "$DB_FILE"
+sudo chown "$(whoami):$(whoami)" "$DB_FILE" || { echo "Failed to adjust ownership of $DB_FILE"; exit 1; }
+
+# Check if sqlite3 is installed
+if ! command -v sqlite3 &>/dev/null; then
+    echo "sqlite3 is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y sqlite3 || { echo "Failed to install sqlite3"; exit 1; }
+fi
+
 
 # Check if sqlite3 is installed
 if ! command -v sqlite3 &>/dev/null; then
