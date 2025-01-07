@@ -76,10 +76,21 @@ SQL_UPDATE="UPDATE creds SET api_key='$API_KEY',client_id='$CLIENT_ID';"
 echo "$SQL_UPDATE" | sqlite3 "$DB_FILE" || { echo "Failed to update morpheus.db"; exit 1; }
 
 # Update service files and copy to systemd directory
+# echo "Configuring and installing service files..."
+# for SERVICE_FILE in /tmp/morpheus-setup/services/*.service; do
+#     SERVICE_NAME=$(basename "$SERVICE_FILE")
+#     sudo sed "s|<INSTALL_DIR>|$INSTALL_DIR|g" "$SERVICE_FILE" > "$SERVICE_DIR/$SERVICE_NAME" || { echo "Failed to configure $SERVICE_NAME"; exit 1; }
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable "$SERVICE_NAME"
+# done
+# Update service files and copy to systemd directory
 echo "Configuring and installing service files..."
 for SERVICE_FILE in /tmp/morpheus-setup/services/*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
-    sudo sed "s|<INSTALL_DIR>|$INSTALL_DIR|g" "$SERVICE_FILE" > "$SERVICE_DIR/$SERVICE_NAME" || { echo "Failed to configure $SERVICE_NAME"; exit 1; }
+    
+    # Use sudo for redirection with tee to write to /etc/systemd/system/
+    sudo sed "s|<INSTALL_DIR>|$INSTALL_DIR|g" "$SERVICE_FILE" | sudo tee "$SERVICE_DIR/$SERVICE_NAME" > /dev/null || { echo "Failed to configure $SERVICE_NAME"; exit 1; }
+    
     sudo systemctl daemon-reload
     sudo systemctl enable "$SERVICE_NAME"
 done
