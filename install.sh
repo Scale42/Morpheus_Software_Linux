@@ -37,8 +37,8 @@ sudo chmod +x "$INSTALL_DIR"/*
 echo "Copying configuration files..."
 sudo cp /tmp/morpheus-setup/config/config.txt "$INSTALL_DIR/" || { echo "Failed to copy config.txt"; exit 1; }
 sudo cp /tmp/morpheus-setup/config/morpheus.db "$INSTALL_DIR/" || { echo "Failed to copy morpheus.db"; exit 1; }
-sudo chmod 664 "$INSTALL_DIR/morpheus.db"
 sudo chown sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
+sudo chmod 664 "$INSTALL_DIR/morpheus.db"
 
 # Check if sqlite3 is installed
 if ! command -v sqlite3 &>/dev/null; then
