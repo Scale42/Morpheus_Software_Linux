@@ -37,18 +37,18 @@ sudo chmod +x "$INSTALL_DIR"/*
 echo "Copying configuration files..."
 sudo cp /tmp/morpheus-setup/config/config.txt "$INSTALL_DIR/" || { echo "Failed to copy config.txt"; exit 1; }
 sudo cp /tmp/morpheus-setup/config/morpheus.db "$INSTALL_DIR/" || { echo "Failed to copy morpheus.db"; exit 1; }
-sudo chown sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
-sudo chmod 664 "$INSTALL_DIR/morpheus.db"
+sudo chown -R sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
+sudo chmod -R 664 "$INSTALL_DIR/morpheus.db"
 
-# Ensure the directory is writable
-MOUNT_POINT="$INSTALL_DIR"
-if mount | grep "$MOUNT_POINT" | grep -q "ro,"; then
-    echo "$MOUNT_POINT is mounted as read-only. Remounting as read-write..."
-    sudo mount -o remount,rw "$MOUNT_POINT" || { echo "Failed to remount $MOUNT_POINT as read-write"; exit 1; }
-    echo "$MOUNT_POINT has been remounted as read-write."
-else
-    echo "$MOUNT_POINT is writable."
-fi
+# # Ensure the directory is writable
+# MOUNT_POINT="$INSTALL_DIR"
+# if mount | grep "$MOUNT_POINT" | grep -q "ro,"; then
+#     echo "$MOUNT_POINT is mounted as read-only. Remounting as read-write..."
+#     sudo mount -o remount,rw "$MOUNT_POINT" || { echo "Failed to remount $MOUNT_POINT as read-write"; exit 1; }
+#     echo "$MOUNT_POINT has been remounted as read-write."
+# else
+#     echo "$MOUNT_POINT is writable."
+# fi
 
 # Check if sqlite3 is installed
 if ! command -v sqlite3 &>/dev/null; then
