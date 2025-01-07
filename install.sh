@@ -40,6 +40,16 @@ sudo cp /tmp/morpheus-setup/config/morpheus.db "$INSTALL_DIR/" || { echo "Failed
 sudo chown sabre56:sabre56 "$INSTALL_DIR/morpheus.db"
 sudo chmod 664 "$INSTALL_DIR/morpheus.db"
 
+# Ensure the directory is writable
+MOUNT_POINT="$INSTALL_DIR"
+if mount | grep "$MOUNT_POINT" | grep -q "ro,"; then
+    echo "$MOUNT_POINT is mounted as read-only. Remounting as read-write..."
+    sudo mount -o remount,rw "$MOUNT_POINT" || { echo "Failed to remount $MOUNT_POINT as read-write"; exit 1; }
+    echo "$MOUNT_POINT has been remounted as read-write."
+else
+    echo "$MOUNT_POINT is writable."
+fi
+
 # Check if sqlite3 is installed
 if ! command -v sqlite3 &>/dev/null; then
     echo "sqlite3 is not installed. Installing..."
