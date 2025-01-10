@@ -26,13 +26,12 @@ echo "Creating backup directory $BACKUP_DIR..."
 sudo mkdir -p "$BACKUP_DIR" || { echo "Failed to create backup directory"; exit 1; }
 
 echo "Backing up files and directories from $INSTALL_DIR to $BACKUP_DIR..."
-sudo cp -a "$INSTALL_DIR/." "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
+sudo rsync -a --exclude "$(basename "$BACKUP_DIR")" "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
 
 # Update binaries
 echo "Updating binaries in $INSTALL_DIR..."
 sudo cp "$TMP_DIR/binaries/"* "$INSTALL_DIR/" || { echo "Failed to update binaries"; exit 1; }
 sudo chmod +x "$INSTALL_DIR/"* || { echo "Failed to set execute permissions on binaries"; exit 1; }
-
 
 # Restart services
 echo "Restarting services..."
