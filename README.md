@@ -24,5 +24,5 @@ curl -sL https://raw.githubusercontent.com/Scale42/Morpheus_Software_Linux/refs/
 
 Arguments
 The install.sh script requires two arguments:
-1. <arg1> is the edge id.
+1. <arg1> is the Site id.
 2. <arg2> is the client id.
