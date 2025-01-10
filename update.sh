@@ -26,18 +26,25 @@ echo "Creating backup directory $BACKUP_DIR..."
 sudo mkdir -p "$BACKUP_DIR" || { echo "Failed to create backup directory"; exit 1; }
 
 echo "Backing up files and directories from $INSTALL_DIR to $BACKUP_DIR..."
-sudo rsync -a --exclude "$(basename "$BACKUP_DIR")" "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
+sudo rsync -a "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
+
+# Stop services before updating binaries
+echo "Stopping services..."
+for SERVICE_FILE in /tmp/morpheus-update/services/*.service; do
+    SERVICE_NAME=$(basename "$SERVICE_FILE")
+    sudo systemctl stop "$SERVICE_NAME" || { echo "Failed to stop service $SERVICE_NAME"; exit 1; }
+done
 
 # Update binaries
 echo "Updating binaries in $INSTALL_DIR..."
 sudo cp "$TMP_DIR/binaries/"* "$INSTALL_DIR/" || { echo "Failed to update binaries"; exit 1; }
 sudo chmod +x "$INSTALL_DIR/"* || { echo "Failed to set execute permissions on binaries"; exit 1; }
 
-# Restart services
+# Restart services after updating binaries
 echo "Restarting services..."
-for SERVICE_FILE in "$INSTALL_DIR"/services/*.service; do
+for SERVICE_FILE in /tmp/morpheus-update/services/*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
-    sudo systemctl restart "$SERVICE_NAME" || { echo "Failed to restart $SERVICE_NAME"; exit 1; }
+    sudo systemctl start "$SERVICE_NAME" || { echo "Failed to restart service $SERVICE_NAME"; exit 1; }
 done
 
 # Clean up
