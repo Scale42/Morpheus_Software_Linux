@@ -24,7 +24,7 @@ git clone "$REPO_URL" "$TMP_DIR" || { echo "Failed to clone repository"; exit 1;
 BACKUP_DIR="$INSTALL_DIR/backup_$(date +%Y%m%d_%H%M%S)"
 echo "Creating backup directory $BACKUP_DIR..."
 sudo mkdir -p "$BACKUP_DIR" || { echo "Failed to create backup directory"; exit 1; }
-sudo cp "$INSTALL_DIR"/* "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
+sudo cp -r "$INSTALL_DIR/"* "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
 
 # Update binaries
 echo "Updating binaries in $INSTALL_DIR..."
