@@ -1,5 +1,3 @@
 [connection_urls]
 base_url=https://app.morpheus-management.com
 mca=mqtt.morpheus-management.com
-base_url_test=https://morpheus.viresinnumeris.co.uk
-mca_test=mqtt.dev.viresinnumeris.co.uk
