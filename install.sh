@@ -14,6 +14,13 @@ fi
 API_KEY="$1"
 CLIENT_ID="$2"
 
+# Check if git is installed
+if ! command -v git &>/dev/null; then
+    echo "git is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y git || { echo "Failed to install git"; exit 1; }
+fi
+
 # Check if the directory exists and remove it
 if [ -d "/tmp/morpheus-setup" ]; then
     echo "Removing existing directory /tmp/morpheus-setup..."
