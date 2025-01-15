@@ -26,3 +26,14 @@ Arguments
 The install.sh script requires two arguments:
 1. <arg1> is the Site id.
 2. <arg2> is the client id.
+
+## **Update**
+
+To update the Morpheus software
+
+### **Run the Update Command**
+
+Run the following one-liner command:
+
+```bash
+curl -sL https://raw.githubusercontent.com/Scale42/Morpheus_Software_Linux/main/update.sh | bash
