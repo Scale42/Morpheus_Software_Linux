@@ -4,6 +4,7 @@
 INSTALL_DIR="/opt/morpheus"
 REPO_URL="https://github.com/Scale42/Morpheus_Software_Linux.git"
 TMP_DIR="/tmp/morpheus-update"
+BACKUP_DIR="$INSTALL_DIR/backup"
 
 # Check if INSTALL_DIR exists
 if [ ! -d "$INSTALL_DIR" ]; then
@@ -21,16 +22,20 @@ echo "Cloning repository to $TMP_DIR..."
 git clone "$REPO_URL" "$TMP_DIR" || { echo "Failed to clone repository"; exit 1; }
 
 # Backup existing binaries
-BACKUP_DIR="$INSTALL_DIR/backup_$(date +%Y%m%d_%H%M%S)"
-echo "Creating backup directory $BACKUP_DIR..."
-sudo mkdir -p "$BACKUP_DIR" || { echo "Failed to create backup directory"; exit 1; }
+if [ -d "$BACKUP_DIR" ]; then
+    echo "Clearing old backup in $BACKUP_DIR..."
+    sudo rm -rf "$BACKUP_DIR"/* || { echo "Failed to clear old backup"; exit 1; }
+else
+    echo "Creating backup directory $BACKUP_DIR..."
+    sudo mkdir -p "$BACKUP_DIR" || { echo "Failed to create backup directory"; exit 1; }
+fi
 
 echo "Backing up files and directories from $INSTALL_DIR to $BACKUP_DIR..."
-sudo rsync -a "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
+sudo rsync -a --delete "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backup binaries"; exit 1; }
 
 # Stop services before updating binaries
 echo "Stopping services..."
-for SERVICE_FILE in /tmp/morpheus-update/services/*.service; do
+for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
     sudo systemctl stop "$SERVICE_NAME" || { echo "Failed to stop service $SERVICE_NAME"; exit 1; }
 done
@@ -42,7 +47,7 @@ sudo chmod +x "$INSTALL_DIR/"* || { echo "Failed to set execute permissions on b
 
 # Restart services after updating binaries
 echo "Restarting services..."
-for SERVICE_FILE in /tmp/morpheus-update/services/*.service; do
+for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
     sudo systemctl start "$SERVICE_NAME" || { echo "Failed to restart service $SERVICE_NAME"; exit 1; }
 done
