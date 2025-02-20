@@ -6,7 +6,9 @@ After=network.target
 WorkingDirectory=<INSTALL_DIR>
 ExecStart=<INSTALL_DIR>/remoteexecutor
 Restart=always
-RestartSec=1
+RestartSec=3
+StartLimitIntervalSec=60
+StartLimitBurst=5
 
 [Install]
 WantedBy=multi-user.target
