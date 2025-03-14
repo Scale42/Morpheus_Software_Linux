@@ -89,6 +89,12 @@ curl -sL https://raw.githubusercontent.com/Scale42/Morpheus_Software_Linux/main/
 curl -sL https://raw.githubusercontent.com/Scale42/Morpheus_Software_Linux/main/rollback.sh | bash
 ```
 
+### **Uninstall the software**
+
+```bash
+curl -sL https://raw.githubusercontent.com/Scale42/Morpheus_Software_Linux/main/uninstall.sh | bash
+```
+
 ### **Check service status**
 ```bash
 sudo systemctl status <service-name>
