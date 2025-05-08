@@ -1,0 +1,14 @@
+[Unit]
+Description=Manage Ip Reporter Executable Service
+After=network.target
+
+[Service]
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/ipreporter
+Restart=always
+RestartSec=3
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
