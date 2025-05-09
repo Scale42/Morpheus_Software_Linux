@@ -21,23 +21,24 @@ fi
 echo "Cloning repository to $TMP_DIR..."
 git clone "$REPO_URL" "$TMP_DIR" || { echo "Failed to clone repository"; exit 1; }
 
-# Install and enable new services
-echo "Installing and enabling new services if any..."
+# Install and enable new services before stopping any
+echo "Installing and enabling services..."
 
 for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
     SYSTEMD_PATH="/etc/systemd/system/$SERVICE_NAME"
 
-    echo "Installing $SERVICE_NAME..."
-    sudo cp "$SERVICE_FILE" "$SYSTEMD_PATH" || { echo "Failed to copy $SERVICE_NAME to systemd"; exit 1; }
+    echo "Copying $SERVICE_NAME to systemd..."
+    sudo cp "$SERVICE_FILE" "$SYSTEMD_PATH" || { echo "Failed to copy $SERVICE_NAME"; exit 1; }
 
-    echo "Reloading systemd daemon..."
+    echo "Reloading systemd..."
     sudo systemctl daemon-reexec
     sudo systemctl daemon-reload
 
     echo "Enabling $SERVICE_NAME..."
     sudo systemctl enable "$SERVICE_NAME" || { echo "Failed to enable $SERVICE_NAME"; exit 1; }
 done
+
 
 
 # Backup existing binaries
