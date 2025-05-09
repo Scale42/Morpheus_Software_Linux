@@ -21,14 +21,14 @@ fi
 echo "Cloning repository to $TMP_DIR..."
 git clone "$REPO_URL" "$TMP_DIR" || { echo "Failed to clone repository"; exit 1; }
 
-# Install and enable new services before stopping any
-echo "Installing and enabling services..."
+# Install and enable all services BEFORE stopping them
+echo "Installing and enabling all services..."
 
 for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
     SYSTEMD_PATH="/etc/systemd/system/$SERVICE_NAME"
 
-    echo "Copying $SERVICE_NAME to systemd..."
+    echo "Copying $SERVICE_NAME to systemd directory..."
     sudo cp "$SERVICE_FILE" "$SYSTEMD_PATH" || { echo "Failed to copy $SERVICE_NAME"; exit 1; }
 
     echo "Reloading systemd..."
@@ -38,8 +38,6 @@ for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     echo "Enabling $SERVICE_NAME..."
     sudo systemctl enable "$SERVICE_NAME" || { echo "Failed to enable $SERVICE_NAME"; exit 1; }
 done
-
-
 
 # Backup existing binaries
 if [ -d "$BACKUP_DIR" ]; then
@@ -57,7 +55,8 @@ sudo rsync -a --delete "$INSTALL_DIR/" "$BACKUP_DIR/" || { echo "Failed to backu
 echo "Stopping services..."
 for SERVICE_FILE in "$TMP_DIR/services/"*.service; do
     SERVICE_NAME=$(basename "$SERVICE_FILE")
-    sudo systemctl stop "$SERVICE_NAME" || { echo "Failed to stop service $SERVICE_NAME"; exit 1; }
+    echo "Stopping $SERVICE_NAME..."
+    sudo systemctl stop "$SERVICE_NAME" || echo "Warning: $SERVICE_NAME could not be stopped or was not running."
 done
 
 # Update binaries
