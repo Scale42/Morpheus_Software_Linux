@@ -63,13 +63,6 @@ if ! command -v sqlite3 &>/dev/null; then
     sudo apt install -y sqlite3 || { echo "Failed to install sqlite3"; exit 1; }
 fi
 
-# Check if sqlite3 is installed
-if ! command -v sqlite3 &>/dev/null; then
-    echo "sqlite3 is not installed. Installing..."
-    sudo apt update
-    sudo apt install -y sqlite3 || { echo "Failed to install sqlite3"; exit 1; }
-fi
-
 # Update morpheus.db with provided API key and client ID
 echo "Updating morpheus.db with credentials..."
 DB_FILE="$INSTALL_DIR/morpheus.db"
