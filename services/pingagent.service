@@ -1,0 +1,13 @@
+[Unit]
+Description=Manage Pingagent Executable Service
+After=network.target
+
+[Service]
+WorkingDirectory=<INSTALL_DIR>
+ExecStart=<INSTALL_DIR>/pingagent
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
+

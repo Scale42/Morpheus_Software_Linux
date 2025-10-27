@@ -49,6 +49,12 @@ sudo chmod +x "$INSTALL_DIR"/*
 echo "Copying configuration files..."
 sudo cp /tmp/morpheus-setup/config/config.txt "$INSTALL_DIR/" || { echo "Failed to copy config.txt"; exit 1; }
 sudo cp /tmp/morpheus-setup/config/morpheus.db "$INSTALL_DIR/" || { echo "Failed to copy morpheus.db"; exit 1; }
+sudo cp /tmp/morpheus-setup/config/morpheus.duckdb "$INSTALL_DIR/" || { echo "Failed to copy morpheus.duckdb"; exit 1; }
+
+# Ensure morpheus.duckdb is writable
+DUCK_FILE="$INSTALL_DIR/morpheus.duckdb"
+sudo chmod 664 "$DUCK_FILE"
+sudo chown "$(whoami):$(whoami)" "$DUCK_FILE" || { echo "Failed to adjust ownership of $DUCK_FILE"; exit 1; }
 
 # Ensure morpheus.db is writable
 echo "Ensuring morpheus.db is writable..."
