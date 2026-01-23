@@ -1,4 +1,5 @@
 [connection_urls]
-base_url=https://edge_api.morpheus-management.com
+base_url=https://api.morpheus-management.com
+standard_url=https://edge_api.morpheus-management.com
 mca=mqtt.morpheus-management.com
 luxos_cli=/opt/morpheus/luxos-installer-linux-amd64
